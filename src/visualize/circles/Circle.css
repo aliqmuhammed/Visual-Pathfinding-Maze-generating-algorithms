@@ -1,0 +1,67 @@
+.circle{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border-style: solid;
+    border-width: 2px;
+    border-color: grey;
+    background-color: rgba(0, 0, 0, 0);
+    display: inline-block;  
+}   
+
+.start-circle{
+    background-color: rgba(255, 0, 0, 0.63);
+}
+
+.finish-circle{
+    background-color: rgba(120, 209, 69, 0.924);
+}
+
+.wall-circle{
+    background-color: rgb(128, 128, 128);
+}
+
+.finish-circle-found{
+    animation: stretch1 1s infinite;
+    animation-timing-function: ease-out;
+}
+
+@keyframes stretch1 {
+    0% {
+      transform: scale(.3);
+    }
+    25%{
+        transform: scale(.6);
+    }
+    50% {
+        transform: scale(0.9);
+    }    
+    100% {
+      transform: scale(1.2);
+     
+    }
+  }
+
+.visited-circle{
+    background-color:#1f38a7;
+    animation-name: stretch;
+    animation-duration: 1.5s; 
+    animation-delay: 0;
+    animation-direction: alternate;
+}
+
+
+@keyframes stretch {
+    0% {
+      transform: scale(.3);
+      background-color: #F0F2F0;
+    }
+    50% {
+        transform: scale(0.6);
+        background-color:#282e4b;
+    }    
+    100% {
+      transform: scale(1.2);
+      background-color:#1f38a7;
+    }
+  }
