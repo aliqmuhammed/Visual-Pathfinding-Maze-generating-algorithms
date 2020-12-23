@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import Circle from './circles/Circle';
+//pathfinding
 import bfs from './algorithms/pathFinding/bfs';
-
+//maze
+import recursiveDivision from './algorithms/mazeGenarating/RecursiveDivision';
 import './Visualize.css';
 
 let start_circle_row = null;
@@ -26,9 +28,34 @@ export default class Visualize extends Component {
        const initialGrid = getGrid();
        this.setState({grid:initialGrid});
     }
-// TEST - on mouse keept held down------------------
-    onMouseDown(row,col){
 
+    recursiveDivision(){
+    //  this.resetGrid();
+  
+    console.log('Generating new maze')   
+
+    //maze - result with maze    
+    var gridWithWall = recursiveDivision(this.state.grid);
+ 
+        //animate walls with new maze - add wall class (for animation)
+        for (let row = 0; row < gridWithWall.length; row++) {
+            //if we are done with loops then update acctuall variables so it sets the walls (for variables)
+            if(row === gridWithWall.length){
+                this.setState({grid: gridWithWall});
+            } 
+
+            for (let col = 0; col < gridWithWall[0].length; col++) {
+             setTimeout(() => {
+                 if(gridWithWall[row][col].isWall){
+                    document.getElementById(`circle-${row}-${col}`).className = 'circle wall-circle'
+                 }
+        }, 40 * col);     
+        }
+    }
+
+    }
+
+    onMouseDown(row,col){
           this.mouseHeldDown = true;
           console.log('Mouse IS down')
 
@@ -53,7 +80,7 @@ export default class Visualize extends Component {
           console.log('Mouse IS UPP')
          
     }
-// TEST - on mouse keept held down------------------
+
 
      breathFirstSearch(){
         /*
@@ -73,7 +100,7 @@ export default class Visualize extends Component {
      //if both positions are set then we can run the method       
      if((start_circle_row  && start_circle_col) !== null && (finish_circle_row && finish_circle_col)!== null){
         //remove options to set start and finish position
-        disableStartFinishPos();
+        disableButtons();
         totalVisitedNodes =  bfs([start_circle_row,start_circle_col],this.state.grid);
         if(totalVisitedNodes !== undefined){
         animateBreathFirstSearch(totalVisitedNodes);
@@ -145,10 +172,7 @@ export default class Visualize extends Component {
          }else{
              circle.className = 'circle start-circle';
             }
-         }
-        
-
-       
+         }     
 }
 
     onMouseLeave(row,col){
@@ -299,7 +323,7 @@ export default class Visualize extends Component {
 
    }
 
-    resetGrid(){
+   async resetGrid(){
         //Start row and col set to null
         start_circle_row = null;
         start_circle_col = null;
@@ -308,20 +332,31 @@ export default class Visualize extends Component {
         finish_circle_col = null;
 
     
-        //remove all classes  
-        for (let i = 0; i < totalVisitedNodes.length; i++) {
-            let circle = totalVisitedNodes[i];
-            document.getElementById(`circle-${circle.row}-${circle.col}`).className = 'circle'
+        //remove all classes that we have visited 
+       // for (let i = 0; i < totalVisitedNodes.length; i++) {
+          //  let circle = totalVisitedNodes[i];
+        //    document.getElementById(`circle-${circle.row}-${circle.col}`).className = 'circle'
+      //  }
+
+             //remove all classes if there are walls also
+             for (let row = 0; row < this.state.grid.length; row++) {
+                for (let col = 0; col < this.state.grid[0].length; col++) {
+                 setTimeout(() => {
+                
+                document.getElementById(`circle-${row}-${col}`).className = 'circle'
+                    
+            }, 30 * col);     
+            }
         }
 
         const initialGrid = getGrid();
         this.setState({grid:initialGrid})
         //enable buttons
-        enableStartFinishPos();
+        enableButtons();
         enableAlgoritms();
-        //enable wall btn
+       return true;
     }
-// TROR JAG FIXADE SENASTE PROBLEMET MED DETTA!! SÄTT RÖD, SEN GRÖN SEN BYT RÖD IGEN VART EN BUGG
+
     setStartBtn (){
         this.startBtn = true;
         this.finishBtn = false;
@@ -341,6 +376,9 @@ export default class Visualize extends Component {
         const {grid} = this.state;
         return (
             <>
+            <button id='maze-recursive-division' onClick={() => this.recursiveDivision()}>
+                maze: recursiveDivision
+            </button>
             <button id='wall-button' onClick={() => this.setWallBtn()}>
                 Wall-button
             </button>
@@ -415,14 +453,14 @@ const createCircleData = (col,row) => {
 
 // DISABLE
 const disableAlgoritms = ()=> {
-    const algorithms = ['breathFirstSearch-button'];
+    const algorithms = ['breathFirstSearch-button','maze-recursive-division'];
     for (let i = 0; i < algorithms.length; i++) {
      document.getElementById(algorithms[i]).disabled = true;
     }
 }
 
-const disableStartFinishPos = ()=>{
-    const positions = ['start-button','finish-button'];
+const disableButtons = ()=>{
+    const positions = ['start-button','finish-button','wall-button'];
     for (let i = 0; i < positions.length; i++) {
        document.getElementById( positions[i]).disabled = true;
     }
@@ -430,14 +468,14 @@ const disableStartFinishPos = ()=>{
 
 // ENABLE
 const enableAlgoritms = ()=>{
-    const algorithms = ['breathFirstSearch-button'];
+    const algorithms = ['breathFirstSearch-button','maze-recursive-division'];
     for (let i = 0; i < algorithms.length; i++) {
      document.getElementById(algorithms[i]).disabled = false;
     }
 }
 
-const enableStartFinishPos = ()=>{
-    const positions = ['start-button','finish-button'];
+const enableButtons = ()=>{
+    const positions = ['start-button','finish-button','wall-button'];
     for (let i = 0; i < positions.length; i++) {
        document.getElementById( positions[i]).disabled = false;
     }
