@@ -1,11 +1,11 @@
 .circle{
-    width: 35px;
-    height: 35px;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
     border-style: solid;
-    border-width: 2px;
-    border-color: grey;
-    background-color: rgba(0, 0, 0, 0);
+    border-width: 3px;
+    border-color: rgb(104, 103, 103);
+    background-color: rgba(0, 0, 0, 0.3);
     display: inline-block;  
 }   
 
@@ -18,7 +18,7 @@
 }
 
 .wall-circle{
-    background-color: rgb(128, 128, 128);
+    background-color: rgb(49, 49, 49);
 }
 
 .finish-circle-found{
@@ -28,10 +28,10 @@
 
 @keyframes stretch1 {
     0% {
-      transform: scale(.3);
+      transform: scale(0.3);
     }
     25%{
-        transform: scale(.6);
+        transform: scale(0.6);
     }
     50% {
         transform: scale(0.9);
@@ -43,7 +43,7 @@
   }
 
 .visited-circle{
-    background-color:#1f38a7;
+    background-color:#f1f1ea;
     animation-name: stretch;
     animation-duration: 1.5s; 
     animation-delay: 0;
@@ -53,15 +53,16 @@
 
 @keyframes stretch {
     0% {
-      transform: scale(.3);
-      background-color: #F0F2F0;
+      transform: scale(0.3);
+     
+      background-color:#dddcad;
     }
     50% {
         transform: scale(0.6);
-        background-color:#282e4b;
+        background-color:#d8d672;
     }    
     100% {
       transform: scale(1.2);
-      background-color:#1f38a7;
+      background-color:#f5f125;
     }
   }

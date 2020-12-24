@@ -1,6 +1,6 @@
 var grid;
-export default function generateWall(oldGrid){
-    grid = oldGrid;
+export default function generateWall(initialGrid){
+    grid = initialGrid;
     //add border
     borderWalls(grid);
     
