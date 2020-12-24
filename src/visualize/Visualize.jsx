@@ -13,6 +13,7 @@ let finish_circle_col= null;
 let startBtn;
 let finishBtn;
 let wallBtn = false;
+let eraseBtn = false;
 let mouseHeldDown;
 var totalVisitedNodes = [];
 
@@ -30,48 +31,53 @@ export default class Visualize extends Component {
     }
 
     recursiveDivision(){
-    //  this.resetGrid();
-  
-    console.log('Generating new maze')   
-
-    //maze - result with maze    
+    //maze - result with maze          
     var gridWithWall = recursiveDivision(this.state.grid);
- 
         //animate walls with new maze - add wall class (for animation)
         for (let row = 0; row < gridWithWall.length; row++) {
-            //if we are done with loops then update acctuall variables so it sets the walls (for variables)
             if(row === gridWithWall.length){
                 this.setState({grid: gridWithWall});
-            } 
-
+            }
             for (let col = 0; col < gridWithWall[0].length; col++) {
              setTimeout(() => {
                  if(gridWithWall[row][col].isWall){
                     document.getElementById(`circle-${row}-${col}`).className = 'circle wall-circle'
                  }
-        }, 40 * col);     
-        }
-    }
+        }, 40 * col);    
 
     }
+  }
+
+}
+
 
     onMouseDown(row,col){
           this.mouseHeldDown = true;
           console.log('Mouse IS down')
 
           if(this.wallBtn){
-
           const grid = this.state.grid;
-
-          const newGrid = grid;
-          
-          const node = newGrid[row][col];
-          const newNode = {
-            ...node,
+        
+          const circle = grid[row][col];
+          const newCircle = {
+            ...circle,
             isWall: true,
           };
-          newGrid[row][col] = newNode;
-          this.setState({grid: newGrid});
+          grid[row][col] = newCircle;
+          this.setState({grid: grid});
+        }
+
+        if(this.eraseBtn){
+            const grid = this.state.grid;
+            const circle = grid[row][col];
+            const newCircle = {
+              ...circle,
+              isFinish: false,
+              isStart: false,
+              isWall: false,
+            };
+            grid[row][col] = newCircle;
+            this.setState({grid: grid});
         }
     }
 
@@ -134,6 +140,19 @@ export default class Visualize extends Component {
              }
              grid[row][col] = updatedCircle;
              this.setState({grid: grid});
+            return
+        }else if(this.eraseBtn && this.mouseHeldDown){
+            const grid = this.state.grid; 
+
+            const circle = grid[row][col];
+            const newCircle = {
+              ...circle,
+              isFinish: false,
+              isStart: false,
+              isWall: false,
+            };
+            grid[row][col] = newCircle;
+            this.setState({grid: grid});
             return
         }
         
@@ -224,7 +243,7 @@ export default class Visualize extends Component {
      }
     }
 
-    setCircle(clickedRow,clickedCol){
+    setCircle(clickedRow,clickedCol,event){
         const grid = this.state.grid;
 
         //if its a wall
@@ -323,7 +342,8 @@ export default class Visualize extends Component {
 
    }
 
-   async resetGrid(){
+       resetGrid(){
+     
         //Start row and col set to null
         start_circle_row = null;
         start_circle_col = null;
@@ -341,35 +361,43 @@ export default class Visualize extends Component {
              //remove all classes if there are walls also
              for (let row = 0; row < this.state.grid.length; row++) {
                 for (let col = 0; col < this.state.grid[0].length; col++) {
-                 setTimeout(() => {
-                
                 document.getElementById(`circle-${row}-${col}`).className = 'circle'
-                    
-            }, 30 * col);     
             }
         }
 
         const initialGrid = getGrid();
         this.setState({grid:initialGrid})
-        //enable buttons
-        enableButtons();
+
         enableAlgoritms();
-       return true;
+        enableButtons();
+        return true;
+    
     }
 
+    setEraseBtn(){
+    this.eraseBtn = true;
+    this.startBtn = false;
+    this.finishBtn = false;
+    this.wallBtn = false;
+    }
     setStartBtn (){
+        this.eraseBtn = false;
         this.startBtn = true;
         this.finishBtn = false;
         this.wallBtn = false;
     }
 
     setFinishBtn(){
-        this.finishBtn = true;
+        this.eraseBtn = false;
         this.startBtn = false;
+        this.finishBtn = true;
         this.wallBtn = false;
     }
     setWallBtn(){
-     this.wallBtn = true;
+    this.eraseBtn = false;
+    this.startBtn = false;
+    this.finishBtn = false;
+    this.wallBtn = true;
     }
 
     render() {
@@ -381,6 +409,9 @@ export default class Visualize extends Component {
             </button>
             <button id='wall-button' onClick={() => this.setWallBtn()}>
                 Wall-button
+            </button>
+            <button id='wall-button' onClick={() => this.setEraseBtn()}>
+                Erase-button
             </button>
              <button id='breathFirstSearch-button' onClick={() => this.breathFirstSearch()}>
                 breathFirstSearch
@@ -427,11 +458,12 @@ export default class Visualize extends Component {
         );
     }
 }
-const getGrid = () => {
+
+const  getGrid = () => {
     const grid = [];
-    for (let row = 0; row < 20; row++) {
+    for (let row = 0; row < 30; row++) {
         const createRow = [];
-        for (let col = 0; col < 50; col++) {
+        for (let col = 0; col < 60; col++) {
         createRow.push(createCircleData(col,row));
         }
         grid.push(createRow);
@@ -453,6 +485,7 @@ const createCircleData = (col,row) => {
 
 // DISABLE
 const disableAlgoritms = ()=> {
+   
     const algorithms = ['breathFirstSearch-button','maze-recursive-division'];
     for (let i = 0; i < algorithms.length; i++) {
      document.getElementById(algorithms[i]).disabled = true;
@@ -462,7 +495,7 @@ const disableAlgoritms = ()=> {
 const disableButtons = ()=>{
     const positions = ['start-button','finish-button','wall-button'];
     for (let i = 0; i < positions.length; i++) {
-       document.getElementById( positions[i]).disabled = true;
+       document.getElementById(positions[i]).disabled = true;
     }
 }
 
