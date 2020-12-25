@@ -43,7 +43,7 @@
   }
 
 .visited-circle{
-    background-color:#f1f1ea;
+    background-color:#1FA2FF;
     animation-name: stretch;
     animation-duration: 1.5s; 
     animation-delay: 0;
@@ -55,14 +55,14 @@
     0% {
       transform: scale(0.3);
      
-      background-color:#dddcad;
+      background-color:#A6FFCB;
     }
     50% {
         transform: scale(0.6);
-        background-color:#d8d672;
+        background-color:#12D8FA;
     }    
     100% {
       transform: scale(1.2);
-      background-color:#f5f125;
+      background-color:#1FA2FF;
     }
   }
