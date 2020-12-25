@@ -42,6 +42,11 @@
     }
   }
 
+ .visited-circle-test{
+  background-color:#ddff1f;
+
+ }
+
 .visited-circle{
     background-color:#1FA2FF;
     animation-name: stretch;
