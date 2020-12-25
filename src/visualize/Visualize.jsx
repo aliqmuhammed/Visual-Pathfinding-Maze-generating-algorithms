@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import Circle from './circles/Circle';
 //pathfinding
-import bfs from './algorithms/pathFinding/bfs';
+import bfs from './algorithms/pathfindingAlgorithms/bfs';
+import dfs from './algorithms/pathfindingAlgorithms/dfs';
 //maze
-import recursiveDivision from './algorithms/mazeGenarating/RecursiveDivision';
+import recursiveDivision from './algorithms/mazeAlgorithms/RecursiveDivision';
 import './Visualize.css';
 
 let start_circle_row = null;
@@ -29,6 +30,29 @@ export default class Visualize extends Component {
        const initialGrid = getGrid();
        this.setState({grid:initialGrid});
     }
+
+     dfs(){
+        if(startBtn){
+            this.startBtn = false;
+           }
+           if(finishBtn){
+            this.finishBtn = false;   
+           } 
+
+           if((start_circle_row  && start_circle_col) !== null && (finish_circle_row && finish_circle_col)!== null){
+
+            totalVisitedNodes = dfs(this.state.grid,{row: start_circle_row,col:start_circle_col});
+            //we have to do this, concider the case where starPosition is completly blocked.
+            if(totalVisitedNodes !== undefined){
+                animatePathFinding(totalVisitedNodes);
+                }
+                disableAlgoritms();
+           }else{
+            console.log('You have not set a start and a finish position, cannot run search')           
+        }
+
+
+     }
 
     recursiveDivision(){
     //maze - result with maze          
@@ -109,7 +133,7 @@ export default class Visualize extends Component {
         disableButtons();
         totalVisitedNodes =  bfs([start_circle_row,start_circle_col],this.state.grid);
         if(totalVisitedNodes !== undefined){
-        animateBreathFirstSearch(totalVisitedNodes);
+        animatePathFinding(totalVisitedNodes);
         }
         //while algorithm is running, disable all other pathfinding algorithm
       disableAlgoritms();
@@ -413,6 +437,9 @@ export default class Visualize extends Component {
             <button id='wall-button' onClick={() => this.setEraseBtn()}>
                 Erase-button
             </button>
+            <button id='depthFirstSearch' onClick={() => this.dfs()}>
+                DepthFirstSearch
+            </button>
              <button id='breathFirstSearch-button' onClick={() => this.breathFirstSearch()}>
                 breathFirstSearch
             </button>
@@ -461,9 +488,9 @@ export default class Visualize extends Component {
 
 const  getGrid = () => {
     const grid = [];
-    for (let row = 0; row < 30; row++) {
+    for (let row = 0; row <20; row++) {
         const createRow = [];
-        for (let col = 0; col < 60; col++) {
+        for (let col = 0; col < 50; col++) {
         createRow.push(createCircleData(col,row));
         }
         grid.push(createRow);
@@ -515,7 +542,7 @@ const enableButtons = ()=>{
   }
 // ANIMATE
 //Vi kan använda denna metoden för att animera andra, gör den generell och byt namn
-const animateBreathFirstSearch = (totalPath)=>{
+const animatePathFinding = (totalPath)=>{
     for (let i = 0; i < totalPath.length; i++) { 
    setTimeout(() => {
        const circle = totalPath[i];
