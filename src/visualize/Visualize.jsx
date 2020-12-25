@@ -543,11 +543,27 @@ const enableButtons = ()=>{
 // ANIMATE
 //Vi kan använda denna metoden för att animera andra, gör den generell och byt namn
 const animatePathFinding = (totalPath)=>{
+    var previousCircle;
+    var circle;
+
     for (let i = 0; i < totalPath.length; i++) { 
    setTimeout(() => {
-       const circle = totalPath[i];
-       document.getElementById(`circle-${circle.row}-${circle.col}`).className = 'circle visited-circle'
-}, 10 * i);
+    circle = totalPath[i];
+    previousCircle = totalPath[i-1];
+
+       if(previousCircle){
+        document.getElementById(`circle-${previousCircle.row}-${previousCircle.col}`).className = 'circle visited-circle'
+       }
+
+       if(i === totalPath.length -1){
+        document.getElementById(`circle-${circle.row}-${circle.col}`).className = 'circle visited-circle'
+       }else{
+        document.getElementById(`circle-${circle.row}-${circle.col}`).className = 'circle visited-circle-test'
+
+       }
+           
+}, 40 * i);
 }
+
 document.getElementById(`circle-${finish_circle_row}-${finish_circle_col}`).className = 'circle finish-circle finish-circle-found'
 }
