@@ -1,5 +1,3 @@
-
-
 //holds current row
 var currentRow = [];
 //hold current col

@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import Circle from './circles/Circle';
 //pathfinding
-import bfs from './algorithms/pathfindingAlgorithms/bfs';
-import dfs from './algorithms/pathfindingAlgorithms/dfs';
+import bfs from './algorithms/pathfindingAlgorithms/Bfs';
+import dfs from './algorithms/pathfindingAlgorithms/Dfs';
+import dijkstra from './algorithms/pathfindingAlgorithms/Dijkstra';
+
 //maze
 import recursiveDivision from './algorithms/mazeAlgorithms/RecursiveDivision';
 import './Visualize.css';
@@ -31,6 +33,14 @@ export default class Visualize extends Component {
        this.setState({grid:initialGrid});
     }
 
+  Dijkstra(){
+    if((start_circle_row  && start_circle_col) !== null && (finish_circle_row && finish_circle_col)!== null){
+  animatePathFinding(dijkstra(this.state.grid,{row: start_circle_row,col: start_circle_col},{row: finish_circle_row,col: finish_circle_col})); 
+    }else{
+    console.log('You have not set a start and a finish position, cannot run search')           
+}
+}
+
      dfs(){
         if(startBtn){
             this.startBtn = false;
@@ -50,8 +60,6 @@ export default class Visualize extends Component {
            }else{
             console.log('You have not set a start and a finish position, cannot run search')           
         }
-
-
      }
 
     recursiveDivision(){
@@ -443,6 +451,9 @@ export default class Visualize extends Component {
              <button id='breathFirstSearch-button' onClick={() => this.breathFirstSearch()}>
                 breathFirstSearch
             </button>
+            <button id='djikstra' onClick={() => this.Dijkstra()}>
+                Dijkstra
+            </button>
             <button id='start-button' onClick={() => this.setStartBtn()}>
                 Start-position
             </button>
@@ -543,27 +554,27 @@ const enableButtons = ()=>{
 // ANIMATE
 //Vi kan använda denna metoden för att animera andra, gör den generell och byt namn
 const animatePathFinding = (totalPath)=>{
-    var previousCircle;
-    var circle;
+
+    var previousCircle = null;
+    var circle = null;
 
     for (let i = 0; i < totalPath.length; i++) { 
-   setTimeout(() => {
+    setTimeout(() => {
     circle = totalPath[i];
     previousCircle = totalPath[i-1];
-
+  
        if(previousCircle){
         document.getElementById(`circle-${previousCircle.row}-${previousCircle.col}`).className = 'circle visited-circle'
        }
 
-       if(i === totalPath.length -1){
-        document.getElementById(`circle-${circle.row}-${circle.col}`).className = 'circle visited-circle'
-       }else{
         document.getElementById(`circle-${circle.row}-${circle.col}`).className = 'circle visited-circle-test'
 
-       }
-           
-}, 40 * i);
+        if(i === totalPath.length -1){
+            document.getElementById(`circle-${circle.row}-${circle.col}`).className = 'circle visited-circle'
+           }
+         
+}, 15 * i);
 }
-
 document.getElementById(`circle-${finish_circle_row}-${finish_circle_col}`).className = 'circle finish-circle finish-circle-found'
+
 }
