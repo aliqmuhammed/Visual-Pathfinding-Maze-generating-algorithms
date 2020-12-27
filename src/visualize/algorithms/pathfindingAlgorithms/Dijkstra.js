@@ -18,7 +18,6 @@ for(const row of grid){
 
 
 while(!!unvisited.length){
-    console.log('enter while loop?')
 
     //sort nodes
     //numArray.sort((a,b) => a.distance-b.distance);
@@ -26,15 +25,13 @@ while(!!unvisited.length){
 
     //closest
     const closest = unvisited.shift();
-    console.log('closest must be 0: ' + closest.distance)
     //check that its valid
     if(closest.isWall){
-        console.log('isWall stop?')
         continue
     }
 
     if(closest.distance === Infinity){
-        console.log('isInfinity stop')
+        
         return visitedNodesInOrder;
     }
     //set to visited

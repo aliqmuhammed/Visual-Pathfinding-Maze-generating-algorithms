@@ -554,27 +554,25 @@ const enableButtons = ()=>{
 // ANIMATE
 //Vi kan använda denna metoden för att animera andra, gör den generell och byt namn
 const animatePathFinding = (totalPath)=>{
-
     var previousCircle = null;
     var circle = null;
 
     for (let i = 0; i < totalPath.length; i++) { 
     setTimeout(() => {
-    circle = totalPath[i];
+
     previousCircle = totalPath[i-1];
-  
+    circle = totalPath[i];
+
        if(previousCircle){
         document.getElementById(`circle-${previousCircle.row}-${previousCircle.col}`).className = 'circle visited-circle'
        }
 
-        document.getElementById(`circle-${circle.row}-${circle.col}`).className = 'circle visited-circle-test'
+       document.getElementById(`circle-${circle.row}-${circle.col}`).className = 'circle visited-circle-test'
 
-        if(i === totalPath.length -1){
-            document.getElementById(`circle-${circle.row}-${circle.col}`).className = 'circle visited-circle'
-           }
-         
+        if((circle.row === finish_circle_row)&&(circle.col === finish_circle_col)){
+            document.getElementById(`circle-${circle.row}-${circle.col}`).className = 'circle finish-circle finish-circle-found'
+        }
+    
 }, 15 * i);
 }
-document.getElementById(`circle-${finish_circle_row}-${finish_circle_col}`).className = 'circle finish-circle finish-circle-found'
-
 }

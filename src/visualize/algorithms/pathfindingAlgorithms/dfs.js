@@ -8,9 +8,6 @@ export default function init(maze,node){
 
   visitedNodesInOrder = [];
   
-
-   
-  
     var state =  dfs(maze,node);
     console.log('state: ' + state)
     if(state){
@@ -26,6 +23,7 @@ export default function init(maze,node){
 function dfs(maze, node){
     
     if (maze[node.row][node.col].isFinish){
+        visitedNodesInOrder.push({row: node.row,col: node.col})
        console.log("FOUND IT AT: ROW: " + node.row + " COL: " + node.col );
         return true;
     }
@@ -36,8 +34,6 @@ function dfs(maze, node){
         return false;
     }
     for (var i=0;i<neighbours.length;i++){
-        console.log('Visited: ' + "(" + node.row + "," + node.col + ")");
-        
         maze[neighbours[i].row][neighbours[i].col].isVisited = true;
         console.log()
         if(dfs(maze,neighbours[i])){
