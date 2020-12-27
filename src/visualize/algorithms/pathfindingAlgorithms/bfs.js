@@ -21,7 +21,7 @@ visitedNodesInOrder = [];
     grid[startNode[0]][startNode[1]].isVisited = true;
 
     //important that if its empty
-    while(currentRow.length > 0){
+    while(!!currentRow.length){
         //take out current row and current column
         //latest row and col pushed into arrays
         var row = currentRow.shift();
@@ -29,6 +29,7 @@ visitedNodesInOrder = [];
      
         //if the current position is the finished node, then stop
         if(grid[row][col].isFinish){
+            visitedNodesInOrder.push({row: row,col: col})
             //send back visited nodes in order
             return visitedNodesInOrder;
         }
