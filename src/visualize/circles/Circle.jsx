@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import './Circle.css';
-export default class Pentagon extends Component {
+export default class Circle extends Component {
     render() {
         const {
           isStart,
@@ -11,10 +11,8 @@ export default class Pentagon extends Component {
           onClick,
           onMouseEnter,
           onMouseLeave, 
-
           onMouseDown,
           onMouseUp,
-
           isWall, 
         } = this.props;
 
