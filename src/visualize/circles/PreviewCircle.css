@@ -1,0 +1,24 @@
+
+.PreviewCircle{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border-style: solid;
+    border-width: 3px;
+    border-color: rgb(104, 103, 103);
+    background-color: rgba(0, 0, 0, 0.5);
+    display: inline-block;  
+} 
+/*
+mark circle as possible to choose between
+*/
+.circle-choosable{
+    background-color: rgba(232, 245, 54, 0.63);
+}
+
+/*
+mark as acctually choosen
+*/
+.circle-choosen{
+    background-color: rgba(38, 255, 0, 0.63);
+}
