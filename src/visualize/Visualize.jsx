@@ -1,5 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
+import Modal from 'react-modal'
 import Circle from './circles/Circle';
+import PreviewCircle from './circles/PreviewCircle';
+
 //pathfinding
 import bfs from './algorithms/pathfindingAlgorithms/Bfs';
 import dfs from './algorithms/pathfindingAlgorithms/Dfs';
@@ -19,24 +22,38 @@ let wallBtn = false;
 let eraseBtn = false;
 let mouseHeldDown;
 var totalVisitedNodes = [];
-
+//for screen width and calculation of max rows and colums
+var gridRow;
+var gridCol;
+var ScreenWidth;
+var ScreenHeight;
 export default class Visualize extends Component {
     constructor(){
         super();
         this.state= {
             grid: [],
+            isOpen: true,
+            previewRow: 0,
+            previewCol: 0,
         };
+
     }
 
     componentDidMount(){
-       const initialGrid = getGrid();
-       this.setState({grid:initialGrid});
+        //calculates the maximum rows and columns possible for us to add
+       this.calculateScreenDimensions();
     }
+  setGrid(){
+       const initialGrid = this.getGrid();
+       this.setState({grid:initialGrid});
+  }  
 
   Dijkstra(){
     if((start_circle_row  && start_circle_col) !== null && (finish_circle_row && finish_circle_col)!== null){
   animatePathFinding(dijkstra(this.state.grid,{row: start_circle_row,col: start_circle_col},{row: finish_circle_row,col: finish_circle_col})); 
-    }else{
+   disableAlgoritms();
+   disableButtons();
+}else{
     console.log('You have not set a start and a finish position, cannot run search')           
 }
 }
@@ -57,6 +74,7 @@ export default class Visualize extends Component {
                 animatePathFinding(totalVisitedNodes);
                 }
                 disableAlgoritms();
+                disableButtons();
            }else{
             console.log('You have not set a start and a finish position, cannot run search')           
         }
@@ -153,9 +171,6 @@ export default class Visualize extends Component {
 
     
     onMouseEnter(row,col){
-        console.log('mouseheldDown: ' + this.mouseHeldDown)
-        console.log('wallBtn: ' + this.wallBtn)
-        
         //if mouse is held down - acctually set wall on mouse down drag
         if(this.mouseHeldDown && this.wallBtn){
             //we must disable start and finish position buttons
@@ -227,12 +242,10 @@ export default class Visualize extends Component {
 }
 
     onMouseLeave(row,col){
-
     if(!this.mouseHeldDown && this.wallBtn){
         console.log('cant set wall')
         //this.wallBtn = false;   
     }
-    
     const circle = document.getElementById(`circle-${row}-${col}`);
     //used to get the acctuall value inside the circle node, cannot with document.getElementByID
     const circleValue = this.state.grid[row][col];
@@ -252,8 +265,6 @@ export default class Visualize extends Component {
 
         } 
     }
-
-
      if(this.finishBtn){
       if(circle.className === 'circle start-circle'){
           return
@@ -273,6 +284,23 @@ export default class Visualize extends Component {
         circle.className = 'circle';
       }
      }
+    }
+
+    setPreviewCircle(row, col){
+        //column
+        if(row === 0 && col >= 0 && col <= gridCol){
+            //gridCol = col;
+            this.setState({previewCol: col})
+            console.log('gridCol is now: ' + gridCol)
+        }
+
+        //row
+        if(row > 0 && row <= gridRow){
+            //gridRow = row;
+            this.setState({previewRow: row})
+            console.log('gridRow is now: ' + gridRow)
+
+        }
     }
 
     setCircle(clickedRow,clickedCol,event){
@@ -369,13 +397,9 @@ export default class Visualize extends Component {
         //reset button (finishBtn state)
        this.finishBtn = false;
     }
-    //if start and finish button is true = breathfirstSearch enabled!
-    //then after set both to false.
-
    }
 
        resetGrid(){
-     
         //Start row and col set to null
         start_circle_row = null;
         start_circle_col = null;
@@ -383,28 +407,43 @@ export default class Visualize extends Component {
         finish_circle_row = null;
         finish_circle_col = null;
 
-    
-        //remove all classes that we have visited 
-       // for (let i = 0; i < totalVisitedNodes.length; i++) {
-          //  let circle = totalVisitedNodes[i];
-        //    document.getElementById(`circle-${circle.row}-${circle.col}`).className = 'circle'
-      //  }
-
              //remove all classes if there are walls also
              for (let row = 0; row < this.state.grid.length; row++) {
                 for (let col = 0; col < this.state.grid[0].length; col++) {
                 document.getElementById(`circle-${row}-${col}`).className = 'circle'
             }
         }
-
-        const initialGrid = getGrid();
+        const initialGrid = this.getGrid();
         this.setState({grid:initialGrid})
-
         enableAlgoritms();
         enableButtons();
         return true;
     
     }
+    openPreivew(){
+        this.setState({isOpen:true})
+        this.calculateScreenDimensions();
+        this.setGrid();
+    }
+    nextClosePreview(){
+        //acctually sets rows and col
+        gridRow = this.state.previewRow;
+        gridCol = this.state.previewCol;
+        this.setGrid()
+        this.setState({isOpen:false})
+    }
+     calculateScreenDimensions(){
+         ScreenWidth  =  window.screen.availWidth;
+         ScreenHeight =  window.screen.availHeight;
+        //calculate how many is the maximum amount of circles in width and height
+        const maxWidth = Math.floor(ScreenWidth/25); //col
+        const maxHeight = Math.floor(ScreenHeight/25)-7; //row
+       //set this to a variable to show the max width possible and height
+       gridRow = maxHeight;
+       gridCol = maxWidth;
+       //acctually sets the initialgrid with values above (maxHeight and maxWidth)
+       this.setGrid();
+      }
 
     setEraseBtn(){
     this.eraseBtn = true;
@@ -432,26 +471,41 @@ export default class Visualize extends Component {
     this.wallBtn = true;
     }
 
+     getGrid (){
+        const grid = [];
+        for (let row = 0; row <gridRow; row++) {
+            const createRow = [];
+            for (let col = 0; col <gridCol; col++) {
+            createRow.push(createCircleData(col,row));
+            }
+            grid.push(createRow);
+        }
+        return grid;
+    }
+
     render() {
         const {grid} = this.state;
         return (
-            <>
+            <>     
+            <button id='setGridSize' onClick={() =>this.openPreivew()}>
+                Set grid size
+            </button>
             <button id='maze-recursive-division' onClick={() => this.recursiveDivision()}>
                 maze: recursiveDivision
             </button>
             <button id='wall-button' onClick={() => this.setWallBtn()}>
                 Wall-button
             </button>
-            <button id='wall-button' onClick={() => this.setEraseBtn()}>
+            <button id='erase-button' onClick={() => this.setEraseBtn()}>
                 Erase-button
             </button>
-            <button id='depthFirstSearch' onClick={() => this.dfs()}>
+            <button id='depthFirstSearch-button' onClick={() => this.dfs()}>
                 DepthFirstSearch
             </button>
              <button id='breathFirstSearch-button' onClick={() => this.breathFirstSearch()}>
                 breathFirstSearch
             </button>
-            <button id='djikstra' onClick={() => this.Dijkstra()}>
+            <button id='djikstra-button' onClick={() => this.Dijkstra()}>
                 Dijkstra
             </button>
             <button id='start-button' onClick={() => this.setStartBtn()}>
@@ -462,7 +516,47 @@ export default class Visualize extends Component {
             </button>
             <button onClick={() => this.resetGrid()}>
                 Reset-grid
+            </button> {/*onRequestClose={() => this.setState({isOpen: false})} */}
+            <Modal isOpen={this.state.isOpen}  >
+            <h2>Screen Height: {ScreenHeight} px</h2>
+            <h2>Screen Width: {ScreenWidth} px</h2>
+            <h3>Maximum rows possible: <span>{gridRow-1}</span></h3>
+            <h3>Maximum column possible: <span>{gridCol-1}</span></h3>
+            <h3>Choosen number of rows: {this.state.previewRow}</h3>
+            <h3>Choosen number of cols: {this.state.previewCol}</h3>
+            <button onClick={() =>this.nextClosePreview()} >
+                NEXT
             </button>
+            <div className="grid">
+            {grid.map((row,index)=>{
+                    return(
+                        <div key={index}>
+                          {row.map((circle,CircleIndex)=>{
+                              const {row, col } = circle;
+                              return (
+                             <>
+                             {previewIsChoosable(row,col)? 
+                             <PreviewCircle
+                             isChoosable={true}
+                             onClick={() => this.setPreviewCircle(row, col)}
+                             isChoosen={false}
+                             >
+                             </PreviewCircle>
+                             :
+                             <PreviewCircle
+                             isChoosable={false}
+                             onClick={() => console.log()}
+                             >
+                             </PreviewCircle>
+                             }
+                               </>         
+                              );
+                          })}  
+                        </div>
+                   );
+                })}
+            </div>
+            </Modal>
             <div className="grid">
                 {grid.map((row,index)=>{
                     return(
@@ -481,8 +575,6 @@ export default class Visualize extends Component {
                                 onMouseEnter={(row,col) => this.onMouseEnter(row, col)}
                                 onMouseLeave={(row,col)=> this.onMouseLeave(row,col)}
                                 onClick={() => this.setCircle(row, col)}
-                               
-
                                 onMouseDown={(row,col)=> this.onMouseDown(row,col)}
                                 onMouseUp={()=> this.onMouseUp()}>   
                                 </Circle> 
@@ -497,17 +589,7 @@ export default class Visualize extends Component {
     }
 }
 
-const  getGrid = () => {
-    const grid = [];
-    for (let row = 0; row <20; row++) {
-        const createRow = [];
-        for (let col = 0; col < 50; col++) {
-        createRow.push(createCircleData(col,row));
-        }
-        grid.push(createRow);
-    }
-    return grid;
-}
+
 
 //add more data per pentagon
 const createCircleData = (col,row) => {
@@ -524,14 +606,14 @@ const createCircleData = (col,row) => {
 // DISABLE
 const disableAlgoritms = ()=> {
    
-    const algorithms = ['breathFirstSearch-button','maze-recursive-division'];
+    const algorithms = ['breathFirstSearch-button','maze-recursive-division','depthFirstSearch-button','djikstra-button'];
     for (let i = 0; i < algorithms.length; i++) {
      document.getElementById(algorithms[i]).disabled = true;
     }
 }
 
 const disableButtons = ()=>{
-    const positions = ['start-button','finish-button','wall-button'];
+    const positions = ['start-button','finish-button','wall-button','erase-button','setGridSize'];
     for (let i = 0; i < positions.length; i++) {
        document.getElementById(positions[i]).disabled = true;
     }
@@ -539,14 +621,14 @@ const disableButtons = ()=>{
 
 // ENABLE
 const enableAlgoritms = ()=>{
-    const algorithms = ['breathFirstSearch-button','maze-recursive-division'];
+    const algorithms = ['breathFirstSearch-button','maze-recursive-division','depthFirstSearch-button','djikstra-button'];
     for (let i = 0; i < algorithms.length; i++) {
      document.getElementById(algorithms[i]).disabled = false;
     }
 }
 
 const enableButtons = ()=>{
-    const positions = ['start-button','finish-button','wall-button'];
+    const positions = ['start-button','finish-button','wall-button','erase-button','setGridSize'];
     for (let i = 0; i < positions.length; i++) {
        document.getElementById( positions[i]).disabled = false;
     }
@@ -575,4 +657,18 @@ const animatePathFinding = (totalPath)=>{
     
 }, 15 * i);
 }
+}
+
+const previewIsChoosable = (row,col)=>{
+    if(row >= 0 && row <= gridRow){
+        if(row === 0 && col >= 0 && col <= gridCol){
+            return true
+        }
+        if(col === 0){
+            return true
+        }
+        return false; 
+    }else{
+        return false;
+    }
 }
