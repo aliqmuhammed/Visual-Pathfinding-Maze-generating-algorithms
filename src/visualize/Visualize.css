@@ -1,3 +1,45 @@
 .grid{
  margin-top: 8px;
 }
+
+.Modal{
+    outline-style: solid;
+      position: fixed;
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+      background-color:rgba(255, 255, 255, 1);
+      width: 1300px;
+      height:1050px;  
+}
+
+.previewGrid{
+   margin-left: 2.5rem;
+}
+
+.modal-nextBtn{
+    height: 25px;
+    width: auto;    
+    float: right;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    background-color: rgb(74, 93, 117);
+    color: white;
+}
+.modal-text{
+    margin-left: 2.5rem;
+}
+.ReactModal__Overlay {
+    opacity: 0;
+    transition: opacity 500ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open{
+    opacity: 1;
+}
+
+.ReactModal__Overlay--before-close{
+    opacity: 0;
+}
+
