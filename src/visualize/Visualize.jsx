@@ -27,6 +27,9 @@ var gridRow;
 var gridCol;
 var ScreenWidth;
 var ScreenHeight;
+//in preview maze we keep track of clicked row and col
+var previousCol;
+var previousRow;
 export default class Visualize extends Component {
     constructor(){
         super();
@@ -214,7 +217,7 @@ export default class Visualize extends Component {
                 console.log('Its ocupied by green')
              return
          }else{
-              circle.className ='circle wall-circle'; 
+              circle.className ='circle wall-circle-temp'; 
             } 
         }
 
@@ -285,25 +288,68 @@ export default class Visualize extends Component {
       }
      }
     }
-
-    setPreviewCircle(row, col){
+  
+    setPreviewCircle(row,col){
         //column
         if(row === 0 && col >= 0 && col <= gridCol){
             //gridCol = col;
-            this.setState({previewCol: col})
-            console.log('gridCol is now: ' + gridCol)
-        }
-
+            if(previousRow){
+             document.getElementById(`PreviewCircle-${previousRow.row}-${previousRow.col}`).className = 'PreviewCircle  circle-choosable'
+            }
+           
+            //remove animation AFTER the choosen point
+            for (let i = 0; i < gridCol; i++) {
+                if(i <col){
+                    document.getElementById(`PreviewCircle-${row}-${i}`).className = 'PreviewCircle circle-choosable';
+                }else{
+                    document.getElementById(`PreviewCircle-${row}-${i}`).className = 'PreviewCircle';
+                }
+               
+             }
+            //local variable for displaying how many colums were chosen
+            this.setState({previewCol:col});
+            //save the current clicked positions (will be used in the if above to erase it when choosing new position)
+            previousRow = ({row:row,col:col});
+            document.getElementById(`PreviewCircle-${row}-${col}`).className = 'PreviewCircle  circle-choosen'
+          
+            if(this.state.previewRow != 0){
+            for(let  ix  =  1;  ix < gridRow; ix++) {
+                for (let jx = 0; jx < gridCol; jx++) {
+                   if(ix<=this.state.previewRow && jx<=col){
+                    document.getElementById(`PreviewCircle-${ix}-${jx}`).className = 'PreviewCircle circle-choosable';
+                   }else{
+                       document.getElementById(`PreviewCircle-${ix}-${jx}`).className = 'PreviewCircle';
+                   }   
+                }    
+               }
+               document.getElementById(`PreviewCircle-${this.state.previewRow}-${0}`).className = 'PreviewCircle  circle-choosen'
+           }
+         }
         //row
         if(row > 0 && row <= gridRow){
             //gridRow = row;
-            this.setState({previewRow: row})
-            console.log('gridRow is now: ' + gridRow)
+            //reset previous green choosen row
+            if(previousCol){
+                document.getElementById(`PreviewCircle-${previousCol.row}-${previousCol.col}`).className = 'PreviewCircle  circle-choosable'
+            }
 
+            for(let  ix  =  1;  ix < gridRow; ix++) {
+             for (let jx = 0; jx < gridCol; jx++) {
+                if(ix<=row && jx<=this.state.previewCol){
+                 document.getElementById(`PreviewCircle-${ix}-${jx}`).className = 'PreviewCircle circle-choosable';
+                }else{
+                    document.getElementById(`PreviewCircle-${ix}-${jx}`).className = 'PreviewCircle';
+                }   
+             }    
+            }
+
+            previousCol = ({row:row,col:col});
+            this.setState({previewRow: row})
+            document.getElementById(`PreviewCircle-${row}-${col}`).className = 'PreviewCircle  circle-choosen'
         }
     }
 
-    setCircle(clickedRow,clickedCol,event){
+    setCircle(clickedRow,clickedCol){
         const grid = this.state.grid;
 
         //if its a wall
@@ -425,7 +471,7 @@ export default class Visualize extends Component {
         this.calculateScreenDimensions();
         this.setGrid();
     }
-    nextClosePreview(){
+    closeModal(){
         //acctually sets rows and col
         gridRow = this.state.previewRow;
         gridCol = this.state.previewCol;
@@ -441,6 +487,10 @@ export default class Visualize extends Component {
        //set this to a variable to show the max width possible and height
        gridRow = maxHeight;
        gridCol = maxWidth;
+       //set initialValues to max allowed col and row 
+       //TODO how do i want this?--------------------------------------------------------------
+      //this.setState({previewRow: gridRow-1,previewCol:gridCol-1})
+
        //acctually sets the initialgrid with values above (maxHeight and maxWidth)
        this.setGrid();
       }
@@ -517,17 +567,19 @@ export default class Visualize extends Component {
             <button onClick={() => this.resetGrid()}>
                 Reset-grid
             </button> {/*onRequestClose={() => this.setState({isOpen: false})} */}
-            <Modal isOpen={this.state.isOpen}  >
+            <Modal
+            className="Modal"  
+            isOpen={this.state.isOpen} 
+            style={customStyles()}  >
+            <div className="modal-text">
             <h2>Screen Height: {ScreenHeight} px</h2>
             <h2>Screen Width: {ScreenWidth} px</h2>
             <h3>Maximum rows possible: <span>{gridRow-1}</span></h3>
             <h3>Maximum column possible: <span>{gridCol-1}</span></h3>
             <h3>Choosen number of rows: {this.state.previewRow}</h3>
             <h3>Choosen number of cols: {this.state.previewCol}</h3>
-            <button onClick={() =>this.nextClosePreview()} >
-                NEXT
-            </button>
-            <div className="grid">
+            </div>
+            <div className="grid previewGrid">
             {grid.map((row,index)=>{
                     return(
                         <div key={index}>
@@ -537,14 +589,19 @@ export default class Visualize extends Component {
                              <>
                              {previewIsChoosable(row,col)? 
                              <PreviewCircle
+                             key={CircleIndex}
                              isChoosable={true}
-                             onClick={() => this.setPreviewCircle(row, col)}
+                             row={row}
+                             col={col}
+                             onClick={() => this.setPreviewCircle(row,col)}
                              isChoosen={false}
                              >
                              </PreviewCircle>
                              :
                              <PreviewCircle
                              isChoosable={false}
+                             row={row}
+                             col={col}
                              onClick={() => console.log()}
                              >
                              </PreviewCircle>
@@ -556,6 +613,9 @@ export default class Visualize extends Component {
                    );
                 })}
             </div>
+            <button className='modal-nextBtn' onClick={() =>this.closeModal()} >
+                NEXT
+            </button>
             </Modal>
             <div className="grid">
                 {grid.map((row,index)=>{
@@ -634,7 +694,6 @@ const enableButtons = ()=>{
     }
   }
 // ANIMATE
-//Vi kan använda denna metoden för att animera andra, gör den generell och byt namn
 const animatePathFinding = (totalPath)=>{
     var previousCircle = null;
     var circle = null;
@@ -672,3 +731,16 @@ const previewIsChoosable = (row,col)=>{
         return false;
     }
 }
+
+const customStyles =() => {
+    return{
+    content : {
+      top                   : '50%',
+      left                  : '50%',
+      right                 : 'auto',
+      bottom                : 'auto',
+      marginRight           : '-50%',
+      transform             : 'translate(-50%, -50%)'
+    }
+}
+  };
