@@ -1,9 +1,10 @@
 .circle{
     width: 25px;
     height: 25px;
-    border-radius: 50%;
+    border-radius: 20%;
+    padding:1px;
     border-style: solid;
-    border-width: 3px;
+    border-width: 1px;
     border-color: rgb(104, 103, 103);
     background-color: rgba(0, 0, 0, 0.3);
     display: inline-block;  
@@ -17,8 +18,26 @@
     background-color: rgba(120, 209, 69, 0.924);
 }
 
+.wall-circle-temp{
+  background-color: rgb(49, 49, 49);
+}
+
 .wall-circle{
     background-color: rgb(49, 49, 49);
+    animation: stretch2 0.5s;
+    animation-timing-function: ease-out;
+}
+
+@Keyframes stretch2 {
+  0% {
+    transform: scale(0.3);
+  }
+  25%{
+      transform: scale(0.6);
+  }
+  50% {
+      transform: scale(0.9);
+  }    
 }
 
 .finish-circle-found{
