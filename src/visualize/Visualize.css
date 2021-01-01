@@ -1,7 +1,10 @@
-.grid{
- margin-top: 8px;
-}
 
+.grid{
+ margin-top: 15px;
+}
+.previewGrid{
+    margin-top: 15px;
+}
 .Modal{
     outline-style: solid;
       position: fixed;

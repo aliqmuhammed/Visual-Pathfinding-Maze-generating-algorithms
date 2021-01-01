@@ -1,8 +1,9 @@
-import React, { Component, useState } from 'react'
-import Modal from 'react-modal'
+import React, { Component, useState } from 'react';
+import Modal from 'react-modal';
 import Circle from './circles/Circle';
 import PreviewCircle from './circles/PreviewCircle';
-
+import SideNavbar from '../navbar/sideNavbar/sideNavbar';
+import TopNavBar from '../navbar/topNavbar/topNavbar';
 //pathfinding
 import bfs from './algorithms/pathfindingAlgorithms/Bfs';
 import dfs from './algorithms/pathfindingAlgorithms/Dfs';
@@ -54,8 +55,8 @@ export default class Visualize extends Component {
   Dijkstra(){
     if((start_circle_row  && start_circle_col) !== null && (finish_circle_row && finish_circle_col)!== null){
   animatePathFinding(dijkstra(this.state.grid,{row: start_circle_row,col: start_circle_col},{row: finish_circle_row,col: finish_circle_col})); 
-   disableAlgoritms();
-   disableButtons();
+   //disableAlgoritms();
+   //disableButtons();
 }else{
     console.log('You have not set a start and a finish position, cannot run search')           
 }
@@ -76,8 +77,8 @@ export default class Visualize extends Component {
             if(totalVisitedNodes !== undefined){
                 animatePathFinding(totalVisitedNodes);
                 }
-                disableAlgoritms();
-                disableButtons();
+              //  disableAlgoritms();
+               // disableButtons();
            }else{
             console.log('You have not set a start and a finish position, cannot run search')           
         }
@@ -159,13 +160,13 @@ export default class Visualize extends Component {
      //if both positions are set then we can run the method       
      if((start_circle_row  && start_circle_col) !== null && (finish_circle_row && finish_circle_col)!== null){
         //remove options to set start and finish position
-        disableButtons();
+       // disableButtons();
         totalVisitedNodes =  bfs([start_circle_row,start_circle_col],this.state.grid);
         if(totalVisitedNodes !== undefined){
         animatePathFinding(totalVisitedNodes);
         }
         //while algorithm is running, disable all other pathfinding algorithm
-      disableAlgoritms();
+     // disableAlgoritms();
     }else{
         console.log('You have not set a start and a finish position, cannot run search')
     }
@@ -461,8 +462,9 @@ export default class Visualize extends Component {
         }
         const initialGrid = this.getGrid();
         this.setState({grid:initialGrid})
-        enableAlgoritms();
-        enableButtons();
+        //-------------------------------------------FIX disable navbar LI
+       // enableAlgoritms();
+       // enableButtons();
         return true;
     
     }
@@ -536,37 +538,21 @@ export default class Visualize extends Component {
     render() {
         const {grid} = this.state;
         return (
-            <>     
-            <button id='setGridSize' onClick={() =>this.openPreivew()}>
-                Set grid size
-            </button>
-            <button id='maze-recursive-division' onClick={() => this.recursiveDivision()}>
-                maze: recursiveDivision
-            </button>
-            <button id='wall-button' onClick={() => this.setWallBtn()}>
-                Wall-button
-            </button>
-            <button id='erase-button' onClick={() => this.setEraseBtn()}>
-                Erase-button
-            </button>
-            <button id='depthFirstSearch-button' onClick={() => this.dfs()}>
-                DepthFirstSearch
-            </button>
-             <button id='breathFirstSearch-button' onClick={() => this.breathFirstSearch()}>
-                breathFirstSearch
-            </button>
-            <button id='djikstra-button' onClick={() => this.Dijkstra()}>
-                Dijkstra
-            </button>
-            <button id='start-button' onClick={() => this.setStartBtn()}>
-                Start-position
-            </button>
-            <button id='finish-button' onClick={() => this.setFinishBtn()}>
-                Finish-position
-            </button>
-            <button onClick={() => this.resetGrid()}>
-                Reset-grid
-            </button> {/*onRequestClose={() => this.setState({isOpen: false})} */}
+            <>
+            <TopNavBar/>
+            <SideNavbar 
+            setGrid={() => this.openPreivew()}
+            startPos={() => this.setStartBtn()}
+            finishPos={() => this.setFinishBtn()}
+            wall={() => this.setWallBtn()}
+            eraseBtn={() => this.setEraseBtn()}
+            recursiveDivision={() => this.recursiveDivision()}
+            Dijkstra={() => this.Dijkstra()}
+            Dfs={() => this.dfs()}
+            Bfs={() => this.breathFirstSearch()}
+            resetGrid={() => this.resetGrid()}
+            />     
+            {/*onRequestClose={() => this.setState({isOpen: false})} */}
             <Modal
             className="Modal"  
             isOpen={this.state.isOpen} 
@@ -579,7 +565,7 @@ export default class Visualize extends Component {
             <h3>Choosen number of rows: {this.state.previewRow}</h3>
             <h3>Choosen number of cols: {this.state.previewCol}</h3>
             </div>
-            <div className="grid previewGrid">
+            <div className="previewGrid">
             {grid.map((row,index)=>{
                     return(
                         <div key={index}>
@@ -744,3 +730,5 @@ const customStyles =() => {
     }
 }
   };
+
+  
