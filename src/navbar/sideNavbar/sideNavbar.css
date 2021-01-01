@@ -1,0 +1,88 @@
+.navbar{
+    margin-top:14px;
+    height:auto;
+    width: 5rem;
+    position: absolute;
+    background-color:rgb(104, 103, 103);
+    transition: width .5s; 
+    transition-timing-function: ease-in;
+
+}
+.sideImg{
+    float: right;
+    width:30px;
+    height:30px;
+}
+
+.navbar:hover{
+    width: 16rem;
+    height: auto;
+}
+
+.navbar-nav{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.navbar-nav:last-child{
+   margin-top: 80px;
+}
+
+.nav-item{
+    width: 100%;
+}
+
+.nav-link{
+    display: flex;
+    align-items: center;
+    height: 5rem;
+    text-decoration: none;
+    filter: grayscale(100%) opacity(0.7);
+}
+.nav-link:hover{
+    filter: grayscale(0%) opacity(1);
+}
+
+.link-text{
+    display: none;
+    margin-left: 1rem;
+    color: white;
+}
+
+.navbar:hover > .navbar-nav > .nav-item > .dropdown{
+    display: flex;
+}
+
+.navbar:hover .link-text{
+    display: block;
+}
+
+.dropdown{
+    display: none;
+    position: absolute;   
+}
+
+.dropdown > ul {
+    color: white;
+    list-style-type: disc;
+}
+
+.dropdown-link > a{
+    filter: grayscale(100%) opacity(0.7);
+    color: white; 
+    align-items: center;
+    justify-content: center;
+    text-decoration: none; 
+    
+}
+.dropdown-link:hover > a{
+    filter: grayscale(0%) opacity(1);
+    color: white;
+   
+}
+
