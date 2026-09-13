@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="images/pathfinding-project.png" alt="Visual Pathfinding and Maze Generation Algorithms" width="700"/>
+  <img src="repoImage.png" alt="Visual Pathfinding and Maze Generation Algorithms" width="700"/>
 </p>
 
 # Visual Pathfinding & Maze Generation Algorithms
