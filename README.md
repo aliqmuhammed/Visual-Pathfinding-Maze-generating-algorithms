@@ -4,7 +4,9 @@
 
 # Visual Pathfinding & Maze Generation Algorithms
 
-Visualization of pathfinding and maze generation algorithms.
+## About
+
+A visualization tool for exploring pathfinding and maze generation algorithms.
 
 ---
 
@@ -18,22 +20,11 @@ Built mainly for larger screens.
 
 ## Grid Legend
 
-<img src="src/assets/finishPosition.jpg" width="24"> Start &nbsp;&nbsp;
-<img src="src/assets/startPosition.jpg" width="24"> Finish &nbsp;&nbsp;
+<img src="src/assets/startPosition.jpg" width="24"> Start &nbsp;&nbsp;
+<img src="src/assets/finishPosition.jpg" width="24"> Finish &nbsp;&nbsp;
 <img src="src/assets/unvisited.jpg" width="24"> Unvisited &nbsp;&nbsp;
 <img src="src/assets/visited.jpg" width="24"> Visited &nbsp;&nbsp;
 <img src="src/assets/wall.jpg" width="24"> Wall
-
-## Demo
-
-to-be-added
-
----
-
-## About
-
-This project visualizes different pathfinding and maze generation algorithms
-to show how they work step by step in a simple and interactive way.
 
 ---
 
@@ -49,13 +40,12 @@ to show how they work step by step in a simple and interactive way.
 ## Algorithms
 
 ### Pathfinding
-- A*
-- Dijkstra
-- Breadth-First Search
+- Dijkstra's Algorithm
+- Breadth-First Search (BFS)
+- Depth-First Search (DFS)
 
 ### Maze Generation
-- Recursive Backtracking
-- Randomized algorithms
+- Recursive Division
 
 ---
 
