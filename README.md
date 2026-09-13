@@ -2,8 +2,6 @@
   <img src="repoImage.png" alt="Visual Pathfinding and Maze Generation Algorithms" width="700"/>
 </p>
 
-# Visual Pathfinding & Maze Generation Algorithms
-
 ## About
 
 A visualization tool for exploring pathfinding and maze generation algorithms.
