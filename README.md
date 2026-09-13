@@ -21,8 +21,8 @@ Built mainly for larger screens.
 <img src="src/assets/finishPosition.jpg" width="24"> Start &nbsp;&nbsp;
 <img src="src/assets/startPosition.jpg" width="24"> Finish &nbsp;&nbsp;
 <img src="src/assets/unvisited.jpg" width="24"> Unvisited &nbsp;&nbsp;
-<img src="src/assets/visited.png" width="24"> Visited &nbsp;&nbsp;
-<img src="src/assets/wall.png" width="24"> Wall
+<img src="src/assets/visited.jpg" width="24"> Visited &nbsp;&nbsp;
+<img src="src/assets/wall.jpg" width="24"> Wall
 
 ## Demo
 
